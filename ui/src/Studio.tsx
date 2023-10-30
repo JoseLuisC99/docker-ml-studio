@@ -1,10 +1,18 @@
+import React from 'react';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { AppBar, Drawer, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Drawer, IconButton, Tab, Tabs, Toolbar, Typography } from "@mui/material";
 import { Link } from 'react-router-dom';
 import { AnimatedPage } from './AnimatedPage';
+import { ModelBuilder } from './ModelBuilder';
 
 
 export function Studio() {
+    const [value, setValue] = React.useState(0);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
     return (
         <>
         <AnimatedPage>
@@ -22,6 +30,16 @@ export function Studio() {
             </Toolbar>
         </AppBar>
         </AnimatedPage>
+        <Box sx={{width: '100%'}}>
+            <Box sx={{borderBottom: 1}}>
+                <Tabs value={value} onChange={handleChange}>
+                    <Tab label="Model builder" />
+                </Tabs>
+            </Box>
+        </Box>
+        {value === 0 && (
+            <ModelBuilder />
+        )}
         </>
     )
 }
