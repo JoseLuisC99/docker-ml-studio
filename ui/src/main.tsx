@@ -3,11 +3,11 @@ import ReactDOM from "react-dom/client";
 import CssBaseline from "@mui/material/CssBaseline";
 import { DockerMuiThemeProvider } from "@docker/docker-mui-theme";
 
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { Landing } from "./Landing";
 import { Studio } from "./Studio";
 
-const router = createBrowserRouter([
+const router = createMemoryRouter([
   {path: "/", element: <Landing />},
   {path: "/studio", element: <Studio />}
 ])

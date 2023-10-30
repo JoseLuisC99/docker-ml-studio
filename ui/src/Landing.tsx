@@ -12,7 +12,7 @@ export function Landing() {
           direction="row" spacing={2} 
           display={"flex"} justifyContent={"center"} alignItems={"center"}
           style={{marginTop: '4rem', marginBottom: '2rem'}}>
-          <img src='/logo.svg' alt='Docker autopipelines logo' height={50}></img>
+          <img src='https://github.com/JoseLuisC99/Docker-autopipelines/raw/main/ui/public/logo.svg' alt='Docker autopipelines logo' height={50}></img>
           <Box textAlign={'center'}>
             <Typography variant='h1'>Docker Autopipelines</Typography>
             <Typography variant='subtitle1'>A Docker extension to run PyTorch machine learning pipelines</Typography>
@@ -33,7 +33,7 @@ export function Landing() {
           <Typography>New to Docker Autopipelines? Watch this demo to help you get started.</Typography>
           <div style={{marginTop: '1rem'}}>
             <video controls height="300">
-              <source src="/get-started.mp4" type="video/mp4" />
+              <source src="https://github.com/JoseLuisC99/Docker-autopipelines/raw/main/ui/public/get-started.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>
