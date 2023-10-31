@@ -84,6 +84,7 @@ export function Studio() {
                 </AppBar>
                 <Drawer
                     style={{width: drawerWidth, flexShrink: 0, whiteSpace: 'nowrap', boxSizing: 'border-box'}}
+                    sx={{'& .MuiDrawer-paper': {width: drawerWidth}}}
                     variant='permanent' anchor='left'
                 >
                     <Toolbar />
