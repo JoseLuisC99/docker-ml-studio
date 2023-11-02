@@ -10,9 +10,11 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.15",
     "@mui/material": "^5.14.15",
+    "@mui/x-data-grid": "^6.17.0",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-papaparse": "^4.4.0",
     "react-router-dom": "^6.17.0"
   },
   "scripts": {
@@ -21,7 +23,7 @@
     "test": "jest src"
   },
   "devDependencies": {
-    "@docker/extension-api-client-types": "0.3.4",
+    "@docker/extension-api-client-types": "^0.3.4",
     "@types/jest": "^29.1.2",
     "@types/node": "^18.7.18",
     "@types/react": "^18.0.17",
