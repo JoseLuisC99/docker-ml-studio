@@ -3,17 +3,28 @@ import { useEffect, useState } from "react";
 import Papa from 'papaparse';
 import { DataGrid } from '@mui/x-data-grid';
 import AddIcon from '@mui/icons-material/Add';
-import { PreprocessingAction } from "../Interfaces/Dataset";
+import { DatasetType, PreprocessingAction } from "../Interfaces/Dataset";
 
 interface CSVProps {
     csvFile: File,
     addAction: (action: PreprocessingAction) => any
 }
+interface Action {
+    action: string
+    field: string
+}
+interface Column {
+    field: string
+    headerName: string
+    width: number
+}
+
+type GenericObject = { [key: string]: any };
 
 export function CSVDataset({csvFile, addAction}: CSVProps) {
-    const [rows, setRows] = useState([])
-    const [columns, setColumns] = useState([])
-    const [tasks, setTasks] = useState([])
+    const [rows, setRows] = useState<any>([])
+    const [columns, setColumns] = useState<Column[]>([])
+    const [tasks, setTasks] = useState<Action[]>([])
     const [dialog, setDialog] = useState(false)
     const [newAction, setNewAction] = useState("")
     const [fieldSelected, setFieldSelected] = useState("")
@@ -25,12 +36,10 @@ export function CSVDataset({csvFile, addAction}: CSVProps) {
             dynamicTyping: true,
             preview: 50,
             complete: (results) => {
-                const rows = results.data.map((rowData, index) => ({
-                    id: index + 1, ...rowData,
-                }))
+                const rows = results.data.map((rowData: any, id: number) => ({id, ...rowData}))
                 const columns = results.meta.fields?.map((field, index) => ({
                     field, headerName: field, width: 150,
-                }))
+                })) || []
 
                 setColumns(columns)
                 setRows(rows)
@@ -52,7 +61,7 @@ export function CSVDataset({csvFile, addAction}: CSVProps) {
     }
     const addPreprocessingAction = () => {
         setTasks([
-            {id: tasks.length, action: newAction, field: fieldSelected}, ...tasks
+            {action: newAction, field: fieldSelected}, ...tasks
         ])
         addAction({field: fieldSelected, action: newAction})
         handleCloseDialog()

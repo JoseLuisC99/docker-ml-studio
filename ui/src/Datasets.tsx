@@ -48,7 +48,8 @@ export function Datasets() {
     const addAction = (action: PreprocessingAction) => {
         const actions = datasetInfo.preprocessing
         actions.push(action)
-        setDatasetInfo({preprocessing: actions, ...datasetInfo})
+        datasetInfo.preprocessing = actions
+        setDatasetInfo(datasetInfo)
     }
 
     return (
@@ -92,7 +93,7 @@ export function Datasets() {
                     <Stack spacing={2} alignItems='center' sx={{width: '70vw', minWidth: 700}}>
                         <Stack alignItems='center'>
                             <Typography variant='h4' component='div'>{datasetTypeName(datasetInfo.type)}</Typography>
-                            <Typography variant='caption' component='div'>{datasetInfo.file?.path}</Typography>
+                            <Typography variant='caption' component='div'>{datasetInfo.file?.name}</Typography>
                         </Stack>
                         {datasetInfo.type === DatasetType.CSV && datasetInfo.file && (
                             <CSVDataset 
@@ -111,7 +112,7 @@ export function Datasets() {
                 </AnimatedPage>
             )}
 
-            {activeStep === 2 && (
+            {activeStep === 2 && datasetInfo.file && (
                 <AnimatedPage>
                     <SummaryDataset back={handleBack} dataset={datasetInfo} />
                 </AnimatedPage>

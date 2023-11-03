@@ -110,8 +110,12 @@ export function CreateDataset({next, dataInfo}: DatasetProps) {
                         )}
                         {type !== DatasetType.CSV && (
                             <VisuallyHiddenInput 
-                                onChange={(event) => setFile(event.target.files?.[0])}
-                                type='file' directory webkitdirectory />
+                                onChange={(event) => {
+                                    console.log(event.target.files)
+                                    setFile(event.target.files?.[0])
+                                    console.log(file)
+                                }}
+                                type='file' />
                         )}
                     </Button>
                     <FormHelperText>{errors?.file}</FormHelperText>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Card, CardActions, CardContent, FormControl, List, ListItem, ListItemText, Slider, Typography} from "@mui/material";
+import {Alert, AlertTitle, Button, Card, CardActions, CardContent, CircularProgress, Dialog, DialogContent, DialogTitle, FormControl, List, ListItem, ListItemText, Slider, Snackbar, Stack, Typography} from "@mui/material";
 import { DatasetMetadata, datasetTypeName } from "../Interfaces/Dataset";
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { ExecResult } from '@docker/extension-api-client-types/dist/v0';
@@ -11,25 +11,59 @@ interface DatasetProps {
     dataset: DatasetMetadata
 }
 
+interface FileWithPath extends File {
+    path: string
+}
+
 export function SummaryDataset({back, dataset}: DatasetProps) {
-    const [val, setVal] = React.useState(20);
+    const [val, setVal] = React.useState(20)
+    const [openDialog, setOpenDialog] = React.useState(false)
+    const [dialogMsg, setDialogMsg] = React.useState('')
+    const [optMsg, setOptMsg] = React.useState('')
 
-    const handleCreate = async () => {
-        dataset.valSplit = val / 100
-        console.log(dataset)
+    const [openAlert, setOpenAlert] = React.useState(false)
+    const [alertTitle, setAlertTitle] = React.useState('')
+    const [alertMsg, setAlertMsg] = React.useState('')
 
-        // await ddClient.docker.cli.exec('volume', ['ls', '--format', '"{{json .}}"'])
-        console.log('Creating volume')
-        await ddClient.docker.cli.exec('volume', ['create', `${dataset.name}-dataset`])
-        console.log('Creating container')
-        await ddClient.docker.cli.exec('run', ['-v', `${dataset.name}-dataset:/data`, '--name', 'helper', 'busybox'])
-        console.log('Copying files to container')
-        await ddClient.docker.cli.exec('cp', [dataset.file?.path, 'helper:/data'])
-        console.log('Removing container')
-        await ddClient.docker.cli.exec('rm', ['helper'])
+    const catchAlert = (title: string, msg: string) => {
+        setAlertTitle(title)
+        setAlertMsg(msg)
+        setOpenAlert(true)
+        setOpenDialog(false)
     }
 
-    return (
+    const handleCreate = () => {
+        dataset.valSplit = val / 100
+        
+        setOpenDialog(true)
+
+        setDialogMsg('Creating volume')
+        setOptMsg(`${dataset.name}-dataset`)
+        ddClient.docker.cli.exec('volume', ['create', `${dataset.name}-dataset`]).then(_ => {
+            setDialogMsg('Creating container')
+            setOptMsg(`${dataset.name}-helper`)
+            ddClient.docker.cli.exec('run', ['-v', `${dataset.name}-dataset:/data`, '--name', `${dataset.name}-helper`, 'busybox']).then(_ => {
+                setDialogMsg('Copying files to container')
+                setOptMsg(dataset.file?.name || "")
+                ddClient.docker.cli.exec('cp', [(dataset.file as FileWithPath).path || "", `${dataset.name}-helper:/data`]).then(_ => {
+                    setDialogMsg('Removing container')
+                    setOptMsg(`${dataset.name}-helper`)
+                    ddClient.docker.cli.exec('rm', [`${dataset.name}-helper`]).then(_ => {
+                        let datasets = JSON.parse(localStorage.getItem('datasets') || "[]")
+                        datasets = [dataset, ...datasets]
+                        localStorage.setItem('datasets', JSON.stringify(datasets))
+                        setOpenDialog(false)
+                    }, reason => catchAlert('Error removing container', reason.stderr))
+                }, reason => catchAlert('Error copying files', reason.stderr))
+            }, reason => catchAlert('Error creating container', reason.stderr))
+        }, reason => catchAlert('Error creating volume', reason.stderr))
+    }
+
+    const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        setOpenAlert(false)
+    }
+
+    return <>
         <Card sx={{width: 450}}>
             <CardContent>
                 <Typography variant='h4' textAlign='center'>Summary</Typography>
@@ -42,8 +76,8 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                     </ListItem>
                     <ListItem>
                         <ListItemText 
-                            primary='Path'
-                            secondary={dataset.file?.path}
+                            primary='File'
+                            secondary={dataset.file?.name}
                         />
                     </ListItem>
                     <ListItem>
@@ -89,5 +123,23 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                 </Button>
             </CardActions>
         </Card>
-    )
+        <Dialog open={openDialog}>
+            {/* <DialogTitle>Creating dataset</DialogTitle> */}
+            <DialogContent>
+                <Stack direction='row' spacing={4} justifyContent="flex-end" alignItems="center">
+                    <CircularProgress />
+                    <Stack>
+                        <Typography variant='subtitle1' component='div'>{dialogMsg}</Typography>
+                        <Typography variant='caption'>{optMsg}</Typography>
+                    </Stack>
+                </Stack>
+            </DialogContent>
+        </Dialog>
+        <Snackbar open={openAlert}>
+            <Alert severity='error' onClose={handleCloseAlert}>
+                <AlertTitle>{alertTitle}</AlertTitle>
+                {alertMsg}
+            </Alert>
+        </Snackbar>
+    </>
 }
