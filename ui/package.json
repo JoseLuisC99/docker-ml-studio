@@ -15,7 +15,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-papaparse": "^4.4.0",
-    "react-router-dom": "^6.17.0"
+    "react-router-dom": "^6.17.0",
+    "reactflow": "^11.9.4"
   },
   "scripts": {
     "dev": "vite",
