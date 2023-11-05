@@ -1,8 +1,8 @@
 import React from 'react';
 import {Alert, AlertTitle, Button, Card, CardActions, CardContent, CircularProgress, Dialog, DialogContent, DialogTitle, FormControl, List, ListItem, ListItemText, Slider, Snackbar, Stack, Typography} from "@mui/material";
-import { DatasetMetadata, datasetTypeName } from "../Interfaces/Dataset";
+import { DatasetMetadata, DatasetType, datasetTypeName } from "../Interfaces/Dataset";
 import { createDockerDesktopClient } from '@docker/extension-api-client';
-import { ExecResult } from '@docker/extension-api-client-types/dist/v0';
+import { Navigate } from "react-router-dom";
 
 const ddClient = createDockerDesktopClient()
 
@@ -25,6 +25,8 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
     const [alertTitle, setAlertTitle] = React.useState('')
     const [alertMsg, setAlertMsg] = React.useState('')
 
+    const [redirect, setRedirect] = React.useState(false)
+
     const catchAlert = (title: string, msg: string) => {
         setAlertTitle(title)
         setAlertMsg(msg)
@@ -42,17 +44,25 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
         ddClient.docker.cli.exec('volume', ['create', `${dataset.name}-dataset`]).then(_ => {
             setDialogMsg('Creating container')
             setOptMsg(`${dataset.name}-helper`)
-            ddClient.docker.cli.exec('run', ['-v', `${dataset.name}-dataset:/data`, '--name', `${dataset.name}-helper`, 'busybox']).then(_ => {
+            ddClient.docker.cli.exec('run', ['-v', `${dataset.name}-dataset:/data`, '--name', `${dataset.name}-helper`, '-d', 'busybox', 'top']).then(_ => {
                 setDialogMsg('Copying files to container')
                 setOptMsg(dataset.file?.name || "")
-                ddClient.docker.cli.exec('cp', [(dataset.file as FileWithPath).path || "", `${dataset.name}-helper:/data`]).then(_ => {
+                ddClient.docker.cli.exec('cp', [(dataset.file as FileWithPath).path || "", `${dataset.name}-helper:/data`]).then(async _ => {
+                    if (dataset.type !== DatasetType.CSV) {
+                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'tar', '-xvf', `/data/${dataset.path}`, '-C', '/data']).catch(reason => catchAlert('Error extracting tar file', reason.stderr))
+                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'rm', `/data/${dataset.path}`]).catch(reason => catchAlert('Error removing tar file', reason.stderr))
+                    }
+
                     setDialogMsg('Removing container')
                     setOptMsg(`${dataset.name}-helper`)
-                    ddClient.docker.cli.exec('rm', [`${dataset.name}-helper`]).then(_ => {
+                    ddClient.docker.cli.exec('rm', ['-f', `${dataset.name}-helper`]).then(_ => {
                         let datasets = JSON.parse(localStorage.getItem('datasets') || "[]")
                         datasets = [dataset, ...datasets]
                         localStorage.setItem('datasets', JSON.stringify(datasets))
                         setOpenDialog(false)
+
+                        // ddClient.desktopUI.dialog.showOpenDialog()
+                        setRedirect(true)
                     }, reason => catchAlert('Error removing container', reason.stderr))
                 }, reason => catchAlert('Error copying files', reason.stderr))
             }, reason => catchAlert('Error creating container', reason.stderr))
@@ -141,5 +151,6 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                 {alertMsg}
             </Alert>
         </Snackbar>
+        {redirect && <Navigate to='/' />}
     </>
 }

@@ -24,6 +24,10 @@ export function Studio() {
         setStudio(newValue);
     };
 
+    const redirect = () => {
+        setStudio(0)
+    }
+
     return (
         <AnimatedPage>
             <Box sx={{display: 'flex'}}>

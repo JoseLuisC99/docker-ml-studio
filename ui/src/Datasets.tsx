@@ -13,8 +13,9 @@ export function Datasets() {
     const [datasetInfo, setDatasetInfo] = React.useState<DatasetMetadata>({
         name: '',
         type: DatasetType.CSV,
+        path: '',
         preprocessing: [],
-        valSplit: 0.0
+        valSplit: 0.0,
     });
 
     const isStepOptional = (step: number) => {

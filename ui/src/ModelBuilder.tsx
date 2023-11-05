@@ -13,7 +13,7 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 
 import { useState, useCallback } from 'react';
-import ReactFlow, {Background, Controls, applyEdgeChanges, applyNodeChanges, addEdge} from 'reactflow';
+import ReactFlow, {Background, Controls, applyEdgeChanges, applyNodeChanges, addEdge, Node, Edge} from 'reactflow';
 import 'reactflow/dist/style.css';
 
 
@@ -44,18 +44,11 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(1),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-  }));
-
-
-  const initialNodes = [];
-  
-  const initialEdges = [{}];
-
-  
+}));
 
 export function ModelBuilder() {
 
-    const [elements, setElements] = useState(initialNodes);
+    const [elements, setElements] = useState<Node<any>[]>([]);
     const [idCounter, setIdCounter] = useState(0);
     const [newNodeInput1, setNewNodeInput1] = useState('');
     const [newNodeInput2, setNewNodeInput2] = useState('');
@@ -126,20 +119,19 @@ export function ModelBuilder() {
         setIdCounter(idCounter + 1); // Incrementar el contador
     };
     
-    const [nodes, setNodes] = useState(initialNodes);
-    const [edges, setEdges] = useState(initialEdges);
+    const [edges, setEdges] = useState<Edge<any>[]>([]);
     const [variant, setVariant] = useState('lines');
     
     const onNodesChange = useCallback(
-        (changes) => setElements((nds) => applyNodeChanges(changes, nds)),
+        (changes: any) => setElements((nds) => applyNodeChanges(changes, nds)),
         []
     );
     const onEdgesChange = useCallback(
-        (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+        (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
         []
     );
 
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+    const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
     return (
         <>

@@ -115,7 +115,7 @@ export function CreateDataset({next, dataInfo}: DatasetProps) {
                                     setFile(event.target.files?.[0])
                                     console.log(file)
                                 }}
-                                type='file' />
+                                type='file' accept='application/x-tar' />
                         )}
                     </Button>
                     <FormHelperText>{errors?.file}</FormHelperText>
@@ -133,7 +133,7 @@ export function CreateDataset({next, dataInfo}: DatasetProps) {
                 <Button onClick={() => {
                     validate()
                     if (isValid()) {
-                        next({name, type, description, file, preprocessing: [], valSplit: 0.0})
+                        next({name, type, description, file, preprocessing: [], valSplit: 0.0, path: file?.name || ""})
                     }
                 }}>
                     Next

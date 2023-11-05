@@ -18,9 +18,10 @@ export interface PreprocessingAction {
 }
 
 export interface DatasetMetadata {
-    name: string,
-    type: DatasetType,
-    description?: string,
+    name: string
+    type: DatasetType
+    path: string
+    description?: string
     file?: File
     preprocessing: PreprocessingAction[]
     valSplit: number
