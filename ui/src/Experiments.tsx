@@ -1,9 +1,9 @@
-import { Box, Button, Card, CardContent, FormControl, FormControlLabel, FormGroup, Input, InputLabel, MenuItem, Select, Slider, Stack, Stepper, TextField, Typography } from "@mui/material";
+import { Button, Card, CardContent, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Slider, Stack, TextField, Typography } from "@mui/material";
 import { AnimatedPage } from "./AnimatedPage";
 import React, { useEffect } from "react";
 import { DatasetMetadata } from "./Interfaces/Dataset";
 import { ModelMetadata } from "./Interfaces/Model";
-import { CheckBox } from "@mui/icons-material";
+import Checkbox from '@mui/material/Checkbox';
 
 const marks = [
     {value: 0.001, label: '0.001'},
@@ -19,6 +19,7 @@ export function Experiments() {
     const [optimizer, setOptimizer] = React.useState('')
     const [loss, setLoss] = React.useState('')
     const [epochs, setEpochs] = React.useState(10)
+    const [useGPU, setUseGPU] = React.useState(false)
 
     const [datasets, setDatasets] = React.useState<DatasetMetadata[]>([])
     const [models, setModels] = React.useState<ModelMetadata[]>([])
@@ -118,11 +119,10 @@ export function Experiments() {
                             />
                         </FormControl>
 
-                        <FormGroup>
-                            <FormControl>
-                                <FormControlLabel control={<CheckBox />} label="Use GPU" />
-                            </FormControl>
-                        </FormGroup>
+                        <FormControlLabel
+                            label="Use GPU"
+                            control={<Checkbox checked={useGPU} onChange={e => setUseGPU(e.target.checked)}/>}
+                        />
 
                         <Button>
                             Launch experiment
