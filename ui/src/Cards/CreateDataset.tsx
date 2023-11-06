@@ -28,6 +28,10 @@ interface FormErrors {
     file?: string
 }
 
+interface FileWithPath extends File {
+    path: string
+}
+
 export function CreateDataset({next, dataInfo}: DatasetProps) {
     const [name, setName] = React.useState(dataInfo.name)
     const [type, setType] = React.useState(dataInfo.type)
@@ -133,7 +137,7 @@ export function CreateDataset({next, dataInfo}: DatasetProps) {
                 <Button onClick={() => {
                     validate()
                     if (isValid()) {
-                        next({name, type, description, file, preprocessing: [], valSplit: 0.0, path: file?.name || "", typeExperiment: ''})
+                        next({name, type, description, file, preprocessing: [], valSplit: 0.0, path: (file as FileWithPath).path || "", typeExperiment: ''})
                     }
                 }}>
                     Next

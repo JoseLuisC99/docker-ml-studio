@@ -43,6 +43,7 @@ export function Datasets() {
     };
 
     const nextCreateDataset = (dataInfo: DatasetMetadata) => {
+        console.log(dataInfo)
         setDatasetInfo(dataInfo);
         handleNext();
     }

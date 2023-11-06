@@ -58,9 +58,13 @@ export function Experiments() {
         const datasetSel = datasets[dataset as number]
         const modelSel = models[model as number]
         const id = `${modelSel.name}-${datasetSel.name}`
-        const modelJSON = JSON.stringify(modelSel).replaceAll('"', '\\"')
 
-        console.log(modelJSON)
+        const modelJSON = JSON.stringify(modelSel).replaceAll('"', '\\"')
+        console.log([
+            '-v', `${id}-experiment:/experiment`,
+            '-d', '--rm', '--name', `${id}-writer`, 'busybox',
+            'sh', '-c', `"echo '${modelJSON}' > /experiment/model.json"`,
+        ].join(' '))
 
         setDialogMsg('Creating volume')
         setOptMsg(`${id}-experiment`)
@@ -70,7 +74,7 @@ export function Experiments() {
             ddClient.docker.cli.exec('run', [
                 '-v', `${id}-experiment:/experiment`,
                 '-d', '--rm', '--name', `${id}-writer`, 'busybox',
-                'sh', '-c', `'echo ${modelJSON} > /experiment/model.json'`,
+                'sh', '-c', `"echo '${modelJSON}' > /experiment/model.json"`,
             ]).then(_ => {
                 setDialogMsg('Training model')
                 setOptMsg(`${id}-trainer`)

@@ -48,10 +48,10 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
             ddClient.docker.cli.exec('run', ['-v', `${dataset.name}-dataset:/data`, '--name', `${dataset.name}-helper`, '-d', 'busybox', 'top']).then(_ => {
                 setDialogMsg('Copying files to container')
                 setOptMsg(dataset.file?.name || "")
-                ddClient.docker.cli.exec('cp', [(dataset.file as FileWithPath).path || "", `${dataset.name}-helper:/data`]).then(async _ => {
+                ddClient.docker.cli.exec('cp', [`"${dataset.path}"`, `${dataset.name}-helper:/data`]).then(async _ => {
                     if (dataset.type !== DatasetType.CSV) {
-                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'tar', '-xvf', `/data/${dataset.path}`, '-C', '/data']).catch(reason => catchAlert('Error extracting tar file', reason.stderr))
-                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'rm', `/data/${dataset.path}`]).catch(reason => catchAlert('Error removing tar file', reason.stderr))
+                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'tar', '-xvf', `/data/${dataset.file?.name}`, '-C', '/data']).catch(reason => catchAlert('Error extracting tar file', reason.stderr))
+                        await ddClient.docker.cli.exec('exec', [`${dataset.name}-helper`, 'rm', `/data/${dataset.file?.name}`]).catch(reason => catchAlert('Error removing tar file', reason.stderr))
                     }
 
                     setDialogMsg('Removing container')
