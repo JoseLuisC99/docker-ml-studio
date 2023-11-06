@@ -6,7 +6,11 @@ import { createDockerDesktopClient } from "@docker/extension-api-client";
 
 const ddClient = createDockerDesktopClient()
 
-export function Deploy() {
+interface DeployProps {
+    redirect: (msg: string) => any
+}
+
+export function Deploy({redirect}: DeployProps) {
     const [experiments, setExperiments] = React.useState<ExperimentMetadata[]>([])
     const [experimentSel, setExperimentSel] = React.useState<number | string>('')
     const [inferencePort, setInferencePort] = React.useState(8080)
@@ -60,6 +64,7 @@ export function Deploy() {
             deploys = [deploy, ...deploys]
             localStorage.setItem('deploys', JSON.stringify(deploys))
             setOpenDialog(false)
+            redirect('Experiment deployed')
         }, reason => catchAlert('Error deploying experiment', reason.stderr))
     }
 

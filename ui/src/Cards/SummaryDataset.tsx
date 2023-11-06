@@ -8,6 +8,7 @@ const ddClient = createDockerDesktopClient()
 
 interface DatasetProps {
     back: () => any
+    redirect: (msg: string) => any
     dataset: DatasetMetadata
 }
 
@@ -15,7 +16,7 @@ interface FileWithPath extends File {
     path: string
 }
 
-export function SummaryDataset({back, dataset}: DatasetProps) {
+export function SummaryDataset({back, redirect, dataset}: DatasetProps) {
     const [val, setVal] = React.useState(20)
     const [openDialog, setOpenDialog] = React.useState(false)
     const [dialogMsg, setDialogMsg] = React.useState('')
@@ -25,8 +26,6 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
     const [openAlert, setOpenAlert] = React.useState(false)
     const [alertTitle, setAlertTitle] = React.useState('')
     const [alertMsg, setAlertMsg] = React.useState('')
-
-    const [redirect, setRedirect] = React.useState(false)
 
     const catchAlert = (title: string, msg: string) => {
         setAlertTitle(title)
@@ -64,7 +63,7 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                         setOpenDialog(false)
 
                         // ddClient.desktopUI.dialog.showOpenDialog()
-                        setRedirect(true)
+                        redirect('Dataset saved')
                     }, reason => catchAlert('Error removing container', reason.stderr))
                 }, reason => catchAlert('Error copying files', reason.stderr))
             }, reason => catchAlert('Error creating container', reason.stderr))
@@ -165,6 +164,5 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                 {alertMsg}
             </Alert>
         </Snackbar>
-        {redirect && <Navigate to='/' />}
     </>
 }

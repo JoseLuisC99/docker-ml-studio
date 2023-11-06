@@ -15,7 +15,11 @@ const marks = [
     {value: 0.5, label: '0.5',},
 ];
 
-export function Experiments() {
+interface ExperimentsProps {
+    redirect: (msg: string) => any
+}
+
+export function Experiments({redirect}: ExperimentsProps) {
     const [dataset, setDataset] = React.useState<number | string>('')
     const [model, setModel] = React.useState<number | string>('')
     const [lr, setLr] = React.useState<number>(0.001)
@@ -104,6 +108,7 @@ export function Experiments() {
                     localStorage.setItem('experiments', JSON.stringify(experiments))
 
                     setOpenDialog(false)
+                    redirect('Experiment executed successfully')
                 }, reason => catchAlert('Error training model', reason.stderr))
             }, reason => catchAlert('Error creating container', reason.stderr))
         }, reason => catchAlert('Error creating volume', reason.stderr))

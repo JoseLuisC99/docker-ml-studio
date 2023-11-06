@@ -6,7 +6,11 @@ import { DatasetMetadata, DatasetType, PreprocessingAction, datasetTypeName } fr
 import { CSVDataset } from './Cards/CSVDataset';
 import { SummaryDataset } from './Cards/SummaryDataset';
 
-export function Datasets() {
+interface DatasetProps {
+    redirect: (msg: string) => any
+}
+
+export function Datasets({redirect}: DatasetProps) {
     const steps = ['Select dataset type', 'Dataset preprocessing', 'Finish'];
     const [activeStep, setActiveStep] = React.useState(0);
     const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -117,7 +121,7 @@ export function Datasets() {
 
             {activeStep === 2 && datasetInfo.file && (
                 <AnimatedPage>
-                    <SummaryDataset back={handleBack} dataset={datasetInfo} />
+                    <SummaryDataset back={handleBack} dataset={datasetInfo} redirect={redirect} />
                 </AnimatedPage>
             )}
         </Stack>

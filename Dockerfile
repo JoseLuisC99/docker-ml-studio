@@ -23,8 +23,8 @@ COPY ui /ui
 RUN npm run build
 
 FROM alpine
-LABEL org.opencontainers.image.title="Docker Autopipelines" \
-    org.opencontainers.image.description="A Docker extension to run PyTorch machine learning pipelines" \
+LABEL org.opencontainers.image.title="Docker ML Studio" \
+    org.opencontainers.image.description="A Docker extension for building PyTorch machine learning models without coding." \
     org.opencontainers.image.vendor="Awesome Inc." \
     com.docker.desktop.extension.api.version="0.3.4" \
     com.docker.extension.screenshots="" \

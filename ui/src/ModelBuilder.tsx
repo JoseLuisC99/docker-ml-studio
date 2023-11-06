@@ -39,7 +39,11 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-export function ModelBuilder() {
+interface ModelBuilderProps {
+    redirect: (msg: string) => any
+}
+
+export function ModelBuilder({redirect}: ModelBuilderProps) {
     const [elements, setElements] = useState<Node<any>[]>([]);
     const [idCounter, setIdCounter] = useState(0);
     const [layers, setLayers] = useState<{[key: string]: GenericObject}>({})
@@ -94,6 +98,7 @@ export function ModelBuilder() {
         setModelName('')
         setDescription('')
         setSaveDialog(false)
+        redirect('Model created')
     }
 
     const addLayer = (idLayer: string, node: Node<any>) => {

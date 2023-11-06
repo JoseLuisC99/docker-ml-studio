@@ -44,8 +44,8 @@ export function MainStudio() {
         <Stack spacing={4} maxWidth='100%'>
             <Stack spacing={2}>
                 <Box textAlign={'center'}>
-                <Typography variant='h2'>Docker Autopipelines</Typography>
-                <Typography variant="subtitle1">Studio</Typography>
+                <Typography variant='h2'>Docker ML Studio</Typography>
+                <Typography variant="subtitle1">Prototype</Typography>
                 </Box>
             </Stack>
 

@@ -1,4 +1,4 @@
-IMAGE?=joseluis99c/docker-autopipelines
+IMAGE?=joseluis99c/docker-ml-studio
 TAG?=latest
 
 BUILDER=buildx-multi-arch
