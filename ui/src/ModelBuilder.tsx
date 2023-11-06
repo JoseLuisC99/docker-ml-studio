@@ -19,6 +19,10 @@ import { GenericObject } from "./Interfaces/Model";
 import { Conv2dLayer } from "./LayerNodes/Conv2dLayer";
 import { Pooling2dLayer } from "./LayerNodes/Pooling2dLayer";
 import { Normalization2dLayer } from "./LayerNodes/NormalizationLayers";
+import { SparceLayer } from "./LayerNodes/SparceLayers";
+import { DropoutLayer } from "./LayerNodes/DropoutLayer";
+import { RecurrentLayer } from "./LayerNodes/RecurrentLayers";
+import { ResnetLayer } from "./LayerNodes/ResnetLayer";
 
 
 interface LayerButtonInfo {
@@ -47,7 +51,11 @@ export function ModelBuilder() {
         'linearLayer': LinearLayer,
         'conv2dLayer': Conv2dLayer,
         'pooling2dLayer': Pooling2dLayer,
-        'normalization2dLayer': Normalization2dLayer
+        'normalization2dLayer': Normalization2dLayer,
+        'sparceLayer': SparceLayer,
+        'dropoutLayer': DropoutLayer,
+        'recurrentLayer': RecurrentLayer,
+        'resnetLayer': ResnetLayer
     }), []);
 
     const saveModel = () => {
@@ -159,6 +167,63 @@ export function ModelBuilder() {
         addLayer(idLayer, newNode)
     }
 
+    const handleClickDropoutLayer = (type: string) => {
+        const idLayer = `node-${idCounter}`
+        const newNode = {
+            id: idLayer,
+            type: 'dropoutLayer',
+            position: { x: 70, y: 70 },
+            data: {
+                type: type,
+                update: generateNodeEvent(type.toLowerCase(), idLayer)
+            }
+        };
+    
+        addLayer(idLayer, newNode)
+    }
+
+    const handleClickSparceLayer = (type: string) => {
+        const idLayer = `node-${idCounter}`
+        const newNode = {
+            id: idLayer,
+            type: 'sparceLayer',
+            position: { x: 70, y: 70 },
+            data: {
+                type: type,
+                update: generateNodeEvent(type.toLowerCase(), idLayer)
+            }
+        };
+    
+        addLayer(idLayer, newNode)
+    }
+
+    const handleClickRecurrentLayer = (type: string) => {
+        const idLayer = `node-${idCounter}`
+        const newNode = {
+            id: idLayer,
+            type: 'recurrentLayer',
+            position: { x: 70, y: 70 },
+            data: {
+                type: type,
+                update: generateNodeEvent(type.toLowerCase(), idLayer)
+            }
+        };
+    
+        addLayer(idLayer, newNode)
+    }
+
+    const handleClickResNet = () => {
+        const idLayer = `node-${idCounter}`
+        const newNode = {
+            id: idLayer,
+            type: 'resnetLayer',
+            position: { x: 70, y: 70 },
+            data: generateNodeEvent('linear', idLayer)
+        };
+    
+        addLayer(idLayer, newNode)
+    };
+
     
     const [edges, setEdges] = useState<Edge<any>[]>([]);
     const onNodesChange = useCallback(
@@ -185,6 +250,20 @@ export function ModelBuilder() {
     ];
     const normLayers = [
         {key: 'batchnorm2d', title: 'BatchNorm 2D', click: () => handleClickNormalizationLayer('BatchNorm2d')},
+    ];
+    const dropoutLayers = [
+        {key: 'dropout', title: 'Dropout Layer', click: () => handleClickDropoutLayer('Dropout')},
+    ];
+    const sparceLayers = [
+        {key: 'embedding', title: 'Embedding', click: () => handleClickSparceLayer('Embedding')},
+    ];
+    const recurrentLayers = [
+        {key: 'rnn', title: 'RNN layer', click: () => handleClickRecurrentLayer('RNN')},
+        {key: 'lstm', title: 'LSTM layer', click: () => handleClickRecurrentLayer('LSTM')},
+        {key: 'gru', title: 'GRU layer', click: () => handleClickRecurrentLayer('GRU')},
+    ];
+    const resnetLayers: LayerButtonInfo[] = [
+        {key: 'resnet', title: 'ResNet Layer', click: handleClickResNet}
     ];
     
 
@@ -254,6 +333,67 @@ export function ModelBuilder() {
                             </MenuList>
                         </AccordionDetails>
                     </Accordion>
+
+                    <Accordion style={{margin: 0}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                            <Typography style={{fontWeight: 'bold'}}>Dropout layers</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MenuList>
+                                {dropoutLayers.map((layer, idx) => {
+                                    return <MenuItem onClick={layer.click}>
+                                        <ListItemText>{layer.title}</ListItemText>
+                                    </MenuItem>
+                                })}
+                            </MenuList>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion style={{margin: 0}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                            <Typography style={{fontWeight: 'bold'}}>Sparce layers</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MenuList>
+                                {sparceLayers.map((layer, idx) => {
+                                    return <MenuItem onClick={layer.click}>
+                                        <ListItemText>{layer.title}</ListItemText>
+                                    </MenuItem>
+                                })}
+                            </MenuList>
+                        </AccordionDetails>
+                    </Accordion>
+                    
+                    <Accordion style={{margin: 0}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content">
+                            <Typography style={{fontWeight: 'bold'}}>Recurrent layers</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MenuList>
+                                {recurrentLayers.map((layer, idx) => {
+                                    return <MenuItem onClick={layer.click}>
+                                        <ListItemText>{layer.title}</ListItemText>
+                                    </MenuItem>
+                                })}
+                            </MenuList>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion style={{margin: 0}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography style={{fontWeight: 'bold'}}>ResNet</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MenuList>
+                                {resnetLayers.map((layer, idx) => {
+                                    return <MenuItem onClick={layer.click}>
+                                        <ListItemText>{layer.title}</ListItemText>
+                                    </MenuItem>
+                                })}
+                            </MenuList>
+                        </AccordionDetails>
+                    </Accordion>
+
                 </Grid>
                 <Grid item xs={12} lg={10}>
                         <Item>
