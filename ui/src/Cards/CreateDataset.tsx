@@ -133,7 +133,7 @@ export function CreateDataset({next, dataInfo}: DatasetProps) {
                 <Button onClick={() => {
                     validate()
                     if (isValid()) {
-                        next({name, type, description, file, preprocessing: [], valSplit: 0.0, path: file?.name || ""})
+                        next({name, type, description, file, preprocessing: [], valSplit: 0.0, path: file?.name || "", typeExperiment: ''})
                     }
                 }}>
                     Next

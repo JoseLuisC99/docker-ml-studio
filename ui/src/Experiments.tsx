@@ -21,9 +21,9 @@ export function Experiments() {
     const [lr, setLr] = React.useState<number>(0.001)
     const [optimizer, setOptimizer] = React.useState('')
     const [loss, setLoss] = React.useState('')
-    const [type, setType] = React.useState('')
     const [epochs, setEpochs] = React.useState(10)
     const [useGPU, setUseGPU] = React.useState(false)
+    const [experimentName, setExperimentName] = React.useState('')
 
     const [openDialog, setOpenDialog] = React.useState(false)
     const [dialogMsg, setDialogMsg] = React.useState('')
@@ -86,9 +86,19 @@ export function Experiments() {
                     '--model=/experiment/model.json', `--epochs=${epochs}`, `--batch_size=8`,
                     `--data_path=/data/${datasetSel.name}`, '--output_path=/experiment/trained',
                     '--log_path=/experiment/logs', `--optimizer=${optimizer}`, `--loss=${loss}`,
-                    `--task=${type}`, '--num_classes=5'
+                    `--task=${datasetSel.typeExperiment}`,
                 )
                 ddClient.docker.cli.exec('run', dockerParams).then(_ => {
+                    let experiments = JSON.parse(localStorage.getItem('experiments') || "[]")
+                    const experiment = {
+                        name: experimentName,
+                        dataset: datasetSel.name,
+                        model: modelSel.name,
+                        volume: `${id}-experiment`
+                    }
+                    experiments = [experiment, ...experiments]
+                    localStorage.setItem('experiments', JSON.stringify(experiments))
+
                     setOpenDialog(false)
                 }, reason => catchAlert('Error training model', reason.stderr))
             }, reason => catchAlert('Error creating container', reason.stderr))
@@ -107,6 +117,14 @@ export function Experiments() {
             <Card sx={{width: 450}}>
                 <CardContent>
                     <Stack spacing={2}>
+                        <FormControl fullWidth>
+                            <TextField
+                                label='Experiment name'
+                                value={experimentName}
+                                onChange={(event) => setExperimentName(event.target.value)}
+                            />
+                        </FormControl>
+
                         <FormControl fullWidth>
                             <InputLabel id='dataset-label'>Dataset</InputLabel>
                             <Select
@@ -168,17 +186,6 @@ export function Experiments() {
                                 <MenuItem value='cross_entropy'>Cross Entropy</MenuItem>
                                 <MenuItem value='bce'>Binary Cross Entropy</MenuItem>
                                 <MenuItem value='mse'>Mean Square Error</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl fullWidth>
-                            <InputLabel id='loss-label'>Type of experiment</InputLabel>
-                            <Select
-                                labelId='loss-label' label='Loss function'
-                                value={type} onChange={(event) => setType(event.target.value)}
-                            >
-                                <MenuItem value='binary'>Binary classification</MenuItem>
-                                <MenuItem value='multiclass'>Multiclass classification</MenuItem>
-                                <MenuItem value='multilabel'>Multilabel classification</MenuItem>
                             </Select>
                         </FormControl>
 

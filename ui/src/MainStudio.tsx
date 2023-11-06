@@ -7,10 +7,16 @@ import PhotoSizeSelectActualTwoToneIcon from '@mui/icons-material/PhotoSizeSelec
 import FolderOpenTwoToneIcon from '@mui/icons-material/FolderOpenTwoTone';
 import { ModelMetadata } from "./Interfaces/Model";
 import CodeIcon from '@mui/icons-material/Code';
+import { ExperimentMetadata } from "./Interfaces/Experiments";
+import ScienceIcon from '@mui/icons-material/Science';
+import WebhookIcon from '@mui/icons-material/Webhook';
+import { DeployMetadata } from "./Interfaces/Deploy";
 
 export function MainStudio() {
     const [datasets, setDatasets] = useState<DatasetMetadata[]>([])
     const [models, setModels] = useState<ModelMetadata[]>([])
+    const [experiments, setExperiments] = useState<ExperimentMetadata[]>([])
+    const [deploys, setDeploys] = useState<DeployMetadata[]>([])
 
     useEffect(() => {
         const datasetsStr = localStorage.getItem('datasets') || '[]'
@@ -20,6 +26,16 @@ export function MainStudio() {
     useEffect(() => {
         const modelsStr = localStorage.getItem('models') || '[]'
         setModels(JSON.parse(modelsStr))
+    }, [])
+
+    useEffect(() => {
+        const experimentsStr = localStorage.getItem('experiments') || '[]'
+        setExperiments(JSON.parse(experimentsStr))
+    }, [])
+
+    useEffect(() => {
+        const deploysStr = localStorage.getItem('deploys') || '[]'
+        setDeploys(JSON.parse(deploysStr))
     }, [])
 
     return (
@@ -52,6 +68,9 @@ export function MainStudio() {
                                         <Typography variant="body1">
                                             {dataset.description}
                                         </Typography>
+                                        <Typography variant="caption">
+                                            <span style={{fontWeight: 'bold'}}>Task:</span> {dataset.typeExperiment}
+                                        </Typography>
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -72,6 +91,54 @@ export function MainStudio() {
                                     <CardContent>
                                         <Typography variant="body1">
                                             {model.description}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+
+                <Typography variant="h4">Experiments</Typography>
+                <Grid container spacing={2}>
+                    {experiments.map((experiment, idx) => {
+                        return (
+                            <Grid xs={4} style={{paddingRight: '1rem'}}>
+                                <Card sx={{width: '100%'}}>
+                                    <CardHeader 
+                                        avatar={<ScienceIcon />} 
+                                        title={experiment.name}
+                                    />
+                                    <CardContent>
+                                        <Typography variant="body1">
+                                            <span style={{fontWeight: 'bold'}}>Dataset:</span> {experiment.dataset}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <span style={{fontWeight: 'bold'}}>Model:</span> {experiment.model}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+
+                <Typography variant="h4">Deploys</Typography>
+                <Grid container spacing={2}>
+                    {deploys.map((deploy, idx) => {
+                        return (
+                            <Grid xs={4} style={{paddingRight: '1rem'}}>
+                                <Card sx={{width: '100%'}}>
+                                    <CardHeader 
+                                        avatar={<WebhookIcon />} 
+                                        title={deploy.name}
+                                    />
+                                    <CardContent>
+                                        <Typography variant="body1">
+                                            <span style={{fontWeight: 'bold'}}>Experiment:</span> {deploy.experiment}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            <span style={{fontWeight: 'bold'}}>Port:</span> {deploy.port}
                                         </Typography>
                                     </CardContent>
                                 </Card>

@@ -25,4 +25,5 @@ export interface DatasetMetadata {
     file?: File
     preprocessing: PreprocessingAction[]
     valSplit: number
+    typeExperiment: string
 }

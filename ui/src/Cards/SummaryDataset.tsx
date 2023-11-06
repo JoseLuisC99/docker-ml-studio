@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, AlertTitle, Button, Card, CardActions, CardContent, CircularProgress, Dialog, DialogContent, DialogTitle, FormControl, List, ListItem, ListItemText, Slider, Snackbar, Stack, Typography} from "@mui/material";
+import {Alert, AlertTitle, Button, Card, CardActions, CardContent, CircularProgress, Dialog, DialogContent, DialogTitle, FormControl, InputLabel, List, ListItem, ListItemText, MenuItem, Select, Slider, Snackbar, Stack, Typography} from "@mui/material";
 import { DatasetMetadata, DatasetType, datasetTypeName } from "../Interfaces/Dataset";
 import { createDockerDesktopClient } from '@docker/extension-api-client';
 import { Navigate } from "react-router-dom";
@@ -20,6 +20,7 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
     const [openDialog, setOpenDialog] = React.useState(false)
     const [dialogMsg, setDialogMsg] = React.useState('')
     const [optMsg, setOptMsg] = React.useState('')
+    const [type, setType] = React.useState('')
 
     const [openAlert, setOpenAlert] = React.useState(false)
     const [alertTitle, setAlertTitle] = React.useState('')
@@ -57,6 +58,7 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                     setOptMsg(`${dataset.name}-helper`)
                     ddClient.docker.cli.exec('rm', ['-f', `${dataset.name}-helper`]).then(_ => {
                         let datasets = JSON.parse(localStorage.getItem('datasets') || "[]")
+                        dataset.typeExperiment = type
                         datasets = [dataset, ...datasets]
                         localStorage.setItem('datasets', JSON.stringify(datasets))
                         setOpenDialog(false)
@@ -103,7 +105,7 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                         />
                     </ListItem>
                 </List>
-                <FormControl fullWidth style={{marginTop: '2rem'}}>
+                <FormControl fullWidth style={{margin: '2rem 0 1rem 0'}}>
                     <Typography gutterBottom>
                         Validation split: {val}%
                     </Typography>
@@ -115,6 +117,18 @@ export function SummaryDataset({back, dataset}: DatasetProps) {
                         getAriaValueText={(val: number) => `${val}%`}
                         onChange={(_ , val) => {setVal(val as number)}}
                     />
+                </FormControl>
+
+                <FormControl fullWidth>
+                    <InputLabel id='experiment-label'>Type of experiment</InputLabel>
+                    <Select
+                        labelId='experiment-label' label='Type of experiment'
+                        value={type} onChange={(event) => setType(event.target.value)}
+                    >
+                        <MenuItem value='binary'>Binary classification</MenuItem>
+                        <MenuItem value='multiclass'>Multiclass classification</MenuItem>
+                        <MenuItem value='multilabel'>Multilabel classification</MenuItem>
+                    </Select>
                 </FormControl>
             </CardContent>
             <CardActions

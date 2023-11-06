@@ -16,6 +16,7 @@ export function Datasets() {
         path: '',
         preprocessing: [],
         valSplit: 0.0,
+        typeExperiment: ''
     });
 
     const isStepOptional = (step: number) => {
