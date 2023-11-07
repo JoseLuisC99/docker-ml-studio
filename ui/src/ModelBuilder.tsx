@@ -23,6 +23,7 @@ import { SparceLayer } from "./LayerNodes/SparceLayers";
 import { DropoutLayer } from "./LayerNodes/DropoutLayer";
 import { RecurrentLayer } from "./LayerNodes/RecurrentLayers";
 import { ResnetLayer } from "./LayerNodes/ResnetLayer";
+import { ActivationLayer } from "./LayerNodes/ActivationLayers";
 
 
 interface LayerButtonInfo {
@@ -59,7 +60,8 @@ export function ModelBuilder({redirect}: ModelBuilderProps) {
         'sparceLayer': SparceLayer,
         'dropoutLayer': DropoutLayer,
         'recurrentLayer': RecurrentLayer,
-        'resnetLayer': ResnetLayer
+        'resnetLayer': ResnetLayer,
+        'activationLayer': ActivationLayer
     }), []);
 
     const saveModel = () => {
@@ -229,6 +231,21 @@ export function ModelBuilder({redirect}: ModelBuilderProps) {
         addLayer(idLayer, newNode)
     };
 
+    const handleClickActivationLayer = (type: string) => {
+        const idLayer = `node-${idCounter}`
+        const newNode = {
+            id: idLayer,
+            type: 'activationLayer',
+            position: { x: 70, y: 70 },
+            data: {
+                type: type,
+                update: generateNodeEvent(type.toLowerCase(), idLayer)
+            }
+        };
+    
+        addLayer(idLayer, newNode)
+    }
+
     
     const [edges, setEdges] = useState<Edge<any>[]>([]);
     const onNodesChange = useCallback(
@@ -269,6 +286,12 @@ export function ModelBuilder({redirect}: ModelBuilderProps) {
     ];
     const visionModels: LayerButtonInfo[] = [
         {key: 'resnet', title: 'ResNet Layer', click: handleClickResNet}
+    ];
+
+    const activationLayers = [
+        {key: 'relu', title: 'Relu', click: () => handleClickActivationLayer('Relu')},
+        {key: 'sigmoid', title: 'Sigmoid', click: () => handleClickActivationLayer('Sigmoid')},
+        {key: 'tanh', title: 'Tanh', click: () => handleClickActivationLayer('Tanh')},
     ];
     
 
@@ -391,6 +414,21 @@ export function ModelBuilder({redirect}: ModelBuilderProps) {
                         <AccordionDetails>
                             <MenuList>
                                 {visionModels.map((model, idx) => {
+                                    return <MenuItem onClick={model.click}>
+                                        <ListItemText>{model.title}</ListItemText>
+                                    </MenuItem>
+                                })}
+                            </MenuList>
+                        </AccordionDetails>
+                    </Accordion>
+
+                    <Accordion style={{margin: 0}}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography style={{fontWeight: 'bold'}}>Activation layers</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <MenuList>
+                                {activationLayers.map((model, idx) => {
                                     return <MenuItem onClick={model.click}>
                                         <ListItemText>{model.title}</ListItemText>
                                     </MenuItem>
