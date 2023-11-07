@@ -44,7 +44,7 @@ export function Deploy({redirect}: DeployProps) {
         setOpenDialog(true)
         const experiment = experiments[experimentSel as number]
         const dockerParams = [
-            '--rm', '-d', '-p', `${inferencePort}:8080`,
+            '-d', '-p', `${inferencePort}:8080`,
             '-v', `${experiment.volume}:/model-store`, 
             '--name', `${deployName}-deploy`,
             'pytorch/torchserve:latest-cpu', 'torchserve',
