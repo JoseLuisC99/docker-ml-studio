@@ -14,15 +14,14 @@ interface ActivationLayerInput {
 export function ActivationLayer({data}: ActivationLayerInput) {
 
     useEffect(() => {
-        {data}({})
+        data.update({})
     }, [])
 
     return <>
     <Handle type="source" position={Position.Left} />
     <Card sx={{maxWidth: 200}}>
         <CardContent>
-            <Typography style={{marginBottom: '1rem'}}>{data.type} layer</Typography>
-            
+            <Typography>{data.type} layer</Typography>
         </CardContent>
     </Card>
     <Handle type="target" position={Position.Right} />

@@ -69,6 +69,12 @@ class BaseModel(pl.LightningModule):
                 )))
             elif layer_signature['type'] == 'resnet':
                 layers.append((f'resnet_{layer_idx}', ResNet(BasicBlock, [1, 1, 1, 1])))
+            elif layer_signature['type'] == 'relu':
+                layers.append((f'relu_{layer_idx}', nn.ReLU()))
+            elif layer_signature['type'] == 'sigmoid':
+                layers.append((f'sigmoid_{layer_idx}', nn.Sigmoid()))
+            elif layer_signature['type'] == 'tanh':
+                layers.append((f'tanh_{layer_idx}', nn.Tanh()))
             else:
                 raise Exception(f"Sorry, I can't work with layers of type {layer_signature['type']}")
             layer_idx += 1

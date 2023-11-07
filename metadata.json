@@ -8,7 +8,7 @@
   },
   "ui": {
     "dashboard-tab": {
-      "title": "Docker Autopipelines",
+      "title": "Docker ML Studio",
       "src": "index.html",
       "root": "ui"
     }

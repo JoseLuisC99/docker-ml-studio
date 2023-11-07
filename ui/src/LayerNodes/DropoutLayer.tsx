@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, CardHeader, FormControl, Stack, TextField, Typography } from "@mui/material"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Handle, Position } from "reactflow"
 import { GenericObject } from "../Interfaces/Model"
 
@@ -12,7 +12,11 @@ interface DropoutLayerInput {
 }
 
 export function DropoutLayer({data}: DropoutLayerInput) {
-    const [layerSignature, setLayerSignature] = useState<number>()
+    const [p, setP] = useState<number>(0.5)
+
+    useEffect(() => {
+        data.update({p})
+    }, [])
 
     return <>
     <Handle type="source" position={Position.Left} />
@@ -21,18 +25,18 @@ export function DropoutLayer({data}: DropoutLayerInput) {
             <Typography style={{marginBottom: '1rem'}}>{data.type} layer</Typography>
             <FormControl fullWidth>
                 <TextField 
-                    label="Layer signature" 
+                    label="Probability" 
                     variant="outlined" 
                     type="number" 
-                    value={layerSignature}
+                    value={p}
                     onChange={(e) => {
-                        setLayerSignature(Number(e.target.value))
+                        setP(Number(e.target.value))
                         data.update({
-                            'layer_signature': Number(e.target.value)
+                            'p': Number(e.target.value)
                         })
                     }}
                     InputProps={{
-                        inputProps: {min: 1}
+                        inputProps: {min: 0}
                     }}
                 />
             </FormControl>
